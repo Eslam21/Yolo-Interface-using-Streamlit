@@ -101,14 +101,9 @@ def video_input(data_src):
                 if curr_time - last_fps_update >= 1:
                     st3_text.markdown(f"**{fps:.2f}**")
                     last_fps_update = curr_time
-
+                    
         cap.release()
-
-
-  
-
-
-
+        
 
 def infer_image(img, size=None):
     model.conf = confidence
