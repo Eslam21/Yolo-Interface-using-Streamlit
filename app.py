@@ -22,7 +22,7 @@ def image_input(data_src):
         img_slider = st.slider("Select a test image.", min_value=1, max_value=len(img_path), step=1)
         img_file = img_path[img_slider - 1]
     else:
-        img_bytes = st.sidebar.file_uploader("Upload an image", type=['png', 'jpeg', 'jpg'])
+        img_bytes = st.sidebar.file_uploader("Upload an image", type=['png', 'jpeg', 'jpg',"jfif","iff"])
         if img_bytes:
             img_file = "data/uploaded_data/upload." + img_bytes.name.split('.')[-1]
             Image.open(img_bytes).save(img_file)
@@ -72,23 +72,42 @@ def video_input(data_src):
         output = st.empty()
         prev_time = 0
         curr_time = 0
+        update_frequency = 5  # Update every 5 frames
+        frames_processed = 0
+        last_fps_update = time.time()
+
         while True:
             ret, frame = cap.read()
             if not ret:
                 st.write("Can't read frame, stream ended? Exiting ....")
                 break
-            frame = cv2.resize(frame, (width, height))
-            frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
-            output_img = infer_image(frame)
-            output.image(output_img)
-            curr_time = time.time()
-            fps = 1 / (curr_time - prev_time)
-            prev_time = curr_time
-            st1_text.markdown(f"**{height}**")
-            st2_text.markdown(f"**{width}**")
-            st3_text.markdown(f"**{fps:.2f}**")
+
+            frames_processed += 1
+            if frames_processed >= update_frequency:
+                frames_processed = 0  # Reset counter
+
+                frame = cv2.resize(frame, (width, height))
+                frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
+                output_img = infer_image(frame)
+
+                # Update the UI every update_frequency frames
+                output.image(output_img)
+
+                curr_time = time.time()
+                fps = 1 / (curr_time - prev_time)
+                prev_time = curr_time
+
+                # Update FPS UI every second
+                if curr_time - last_fps_update >= 1:
+                    st3_text.markdown(f"**{fps:.2f}**")
+                    last_fps_update = curr_time
 
         cap.release()
+
+
+  
+
+
 
 
 def infer_image(img, size=None):
