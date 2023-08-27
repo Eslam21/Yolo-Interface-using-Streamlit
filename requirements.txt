@@ -33,7 +33,6 @@ mpmath
 networkx 
 numpy==1.23.1
 opencv-python-headless==4.6.0.66
-opencv-python
 packaging
 pandas 
 parso
@@ -83,5 +82,4 @@ watchdog
 wcwidth
 wget
 zipp
-libgl1
 ffmpeg
