@@ -4,7 +4,6 @@ import wget
 from PIL import Image
 import torch
 import cv2
-import cv
 import os
 import time
 
